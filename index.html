@@ -2,22 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Checkers Game - Sky Blue Background</title>
     <style>
         /* ====================
-           CSS Styles (Sky Blue Background, Mobile Optimized & Color Fixed)
+           CSS Styles (Sky Blue Background, Full Screen Lock)
            ==================== */
         :root {
             --board-size: 640px; 
-            /* Updated Blue/Teal Color Palette */
-            --light-color: #b2ebf2; /* Lighter Cyan (Light Board Square) */
-            --dark-color: #00838f; /* Lighter Dark Teal (Dark Board Square) */
-            --player1-color: #4dd0e1; /* Medium Light Blue (Human Piece) */
-            --player2-color: #006064; /* Dark Teal (AI Piece) */
-            --background-color: #87CEEB; /* Changed to Sky Blue */
-            --accent-color: #0097a7; /* Teal Accent for buttons/highlights */
-            --text-color: #212121; /* Dark gray for text */
+            --light-color: #b2ebf2; 
+            --dark-color: #00838f; 
+            --player1-color: #4dd0e1; 
+            --player2-color: #006064; 
+            --background-color: #87CEEB; /* Sky Blue */
+            --accent-color: #0097a7; 
+            --text-color: #212121; 
         }
 
         body {
@@ -25,12 +24,18 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            min-height: 100vh;
+            /* സ്ക്രീൻ ചലനം പൂർണ്ണമായും തടയുന്നു */
+            height: 100vh;
+            width: 100vw; 
+            overflow: hidden; /* Scrollbars disable */
+            touch-action: none; /* Touch swipe disable */
+            
             margin: 0;
             background-color: var(--background-color); 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
             padding: 10px 5px; 
+            box-sizing: border-box; /* Padding ഉൾപ്പെടുത്തി മൊത്തം വലിപ്പം 100% ആകുന്നു */
         }
 
         h1 {
@@ -63,7 +68,6 @@
             margin: 5px 0;
             padding: 5px;
             border-radius: 5px;
-            /* Background remains light for readability against the sky blue body */
             background-color: rgba(255, 255, 255, 0.9); 
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             font-size: 1.1em;
@@ -71,10 +75,12 @@
 
         /* Main Game Board: Mobile Fit */
         #game-board {
+            /* Viewport Width/Height ഉപയോഗിച്ച് മൊബൈലിൽ ഫിറ്റ് ചെയ്യുന്നു */
             width: 98vw;
             height: 98vw;
-            max-width: var(--board-size);
-            max-height: 80vh; 
+            max-width: min(var(--board-size), 80vh); /* ബോർഡ് സൈസ്, അല്ലെങ്കിൽ 80vh (Screen Height) ഇതിൽ ചെറുത് */
+            max-height: min(var(--board-size), 80vh);
+            
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); 
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -110,8 +116,8 @@
         }
 
         /* Piece Colors */
-        .player1 { background-color: var(--player1-color); } /* Light Blue (Human) */
-        .player2 { background-color: var(--player2-color); } /* Dark Teal (AI) */
+        .player1 { background-color: var(--player1-color); } 
+        .player2 { background-color: var(--player2-color); } 
 
         /* King Piece */
         .king::after {
@@ -205,6 +211,7 @@
                 width: var(--board-size); 
                 height: var(--board-size); 
                 max-height: unset;
+                max-width: unset;
             }
             h1 { font-size: 2.2em; }
             #status-bar { font-size: 1.2em; }
@@ -219,7 +226,7 @@
 </head>
 <body>
 
-    <h1>♟️ AI Checkers </h1>
+    <h1>♟️ AI Checkers (Drafts)</h1>
     
     <div id="status-bar">
         <span>AI Captured (Dark): <span id="score-ai">0</span></span>
