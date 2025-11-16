@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Checkers Game - Sky Blue Background</title>
+    <title>AI Checkers Game - Dark Theme</title>
     <style>
         /* ====================
-           CSS Styles (Sky Blue Background, Full Screen Lock)
+           CSS Styles (Dark Theme, Full Screen Lock, Mobile Optimized)
            ==================== */
         :root {
             --board-size: 640px; 
-            --light-color: #b2ebf2; 
-            --dark-color: #00838f; 
-            --player1-color: #4dd0e1; 
-            --player2-color: #006064; 
-            --background-color: #87CEEB; /* Sky Blue */
-            --accent-color: #0097a7; 
-            --text-color: #212121; 
+            /* ഡാർക്ക് തീം പാലറ്റ് */
+            --light-color: #b2ebf2; /* Lighter Cyan (Light Board Square) */
+            --dark-color: #00838f; /* Dark Teal (Dark Board Square) */
+            --player1-color: #4dd0e1; /* Medium Light Blue (Human Piece) */
+            --player2-color: #006064; /* Very Dark Teal (AI Piece) */
+            --background-color: #2c3e50; /* Deep Dark Gray/Blue Background */
+            --accent-color: #0097a7; /* Teal Accent for buttons/highlights */
+            --text-color: #ecf0f1; /* Light Text for Dark Background */
         }
 
         body {
@@ -35,11 +36,11 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
             padding: 10px 5px; 
-            box-sizing: border-box; /* Padding ഉൾപ്പെടുത്തി മൊത്തം വലിപ്പം 100% ആകുന്നു */
+            box-sizing: border-box; 
         }
 
         h1 {
-            color: var(--dark-color);
+            color: var(--text-color); /* H1 color changed to white */
             margin-bottom: 15px;
             font-size: 1.8em;
             text-align: center;
@@ -68,20 +69,20 @@
             margin: 5px 0;
             padding: 5px;
             border-radius: 5px;
+            /* Status box background remains light for contrast */
             background-color: rgba(255, 255, 255, 0.9); 
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             font-size: 1.1em;
         }
 
-        /* Main Game Board: Mobile Fit */
+        /* Main Game Board: Full Fit */
         #game-board {
-            /* Viewport Width/Height ഉപയോഗിച്ച് മൊബൈലിൽ ഫിറ്റ് ചെയ്യുന്നു */
             width: 98vw;
             height: 98vw;
-            max-width: min(var(--board-size), 80vh); /* ബോർഡ് സൈസ്, അല്ലെങ്കിൽ 80vh (Screen Height) ഇതിൽ ചെറുത് */
+            max-width: min(var(--board-size), 80vh); 
             max-height: min(var(--board-size), 80vh);
             
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); 
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5); /* Darker shadow */
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
@@ -108,7 +109,7 @@
             height: 80%;
             border-radius: 50%;
             position: absolute;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
             border: 2px solid rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: transform 0.2s;
@@ -135,7 +136,7 @@
         .selected { 
             border: 4px solid #ff5722; 
             transform: scale(1.05); 
-            box-shadow: 0 0 10px rgba(255, 87, 34, 0.6);
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.8);
         }
         .highlight { 
             background-color: rgba(0, 151, 167, 0.4) !important; 
@@ -154,7 +155,7 @@
             position: absolute;
         }
 
-        /* Control Buttons Style - Mobile Layout */
+        /* Control Buttons Style */
         #controls {
             margin-top: 20px;
             gap: 10px; 
@@ -176,12 +177,13 @@
             border-radius: 6px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: var(--text-color); /* Button text white/light */
         }
 
         #controls button:hover:not(:disabled) {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         }
 
         #reset-btn { 
@@ -190,17 +192,17 @@
         }
         #undo-btn { 
             background-color: #ffb74d; 
-            color: var(--text-color); 
+            color: #2c3e50; /* Dark text for light button */
         }
         #undo-btn:disabled { 
-            background-color: #e0e0e0; 
-            color: #9e9e9e;
+            background-color: #5d6d7e; /* Darker disabled look */
+            color: #bdc3c7;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
         }
         #difficulty-select { 
-            background-color: #ffffff; 
+            background-color: #34495e; /* Slightly lighter dark background */
             color: var(--text-color);
             border: 1px solid var(--accent-color);
         }
@@ -249,7 +251,7 @@
 
 <script>
     // ===================================
-    // JavaScript Logic (Full Checkers Engine)
+    // JavaScript Logic (Full Checkers Engine with Corrected Chained Jumps)
     // ===================================
 
     const GAME_BOARD = document.getElementById('game-board');
@@ -274,6 +276,7 @@
     let scoreAI = 0;
     let isGameActive = true;
     let history = []; 
+    let mustJumpPiece = null; // Stores the piece that must continue jumping
 
     const PLAYER_CLASSES = { [PLAYER_1]: 'player1', [PLAYER_2]: 'player2' };
     
@@ -333,7 +336,13 @@
         
         SCORE_HUMAN.textContent = scoreHuman;
         SCORE_AI.textContent = scoreAI;
-        STATUS_MESSAGE.textContent = `${currentPlayer === PLAYER_1 ? 'Your Turn (Light)' : 'AI Turn (Dark)'}`;
+        
+        let statusText = `${currentPlayer === PLAYER_1 ? 'Your Turn (Light)' : 'AI Turn (Dark)'}`;
+        if (mustJumpPiece) {
+            statusText = `Must Jump Again! (${currentPlayer === PLAYER_1 ? 'You' : 'AI'})`;
+        }
+        STATUS_MESSAGE.textContent = statusText;
+        
         UNDO_BUTTON.disabled = history.length < 2 || !isGameActive; 
     }
 
@@ -386,16 +395,30 @@
         return jumpMoves.length > 0 ? jumpMoves : moves;
     }
     
-    // Mandatory Jump Logic
+    /**
+     * ചെയിൻഡ് ജമ്പ് (തുടർച്ചയായ ചാട്ടം) നിയമം ഇവിടെ നിർബന്ധമാക്കുന്നു.
+     * @param {Array<Array<number>>} currentBoard - നിലവിലെ ബോർഡ് സ്റ്റേറ്റ്
+     * @param {number} player - 1 (Human) or 2 (AI)
+     * @returns {Array<Object>} - നിയമപരമായ നീക്കങ്ങൾ.
+     */
     function getAllLegalMovesForPlayer(currentBoard, player) {
         let allMoves = [];
         let mandatoryJumps = [];
+
+        // 1. If a piece MUST continue jumping (Mid-chain jump)
+        if (mustJumpPiece && Math.abs(currentBoard[mustJumpPiece.r][mustJumpPiece.c]) === player) {
+            const jumps = getLegalMovesFromBoard(currentBoard, mustJumpPiece.r, mustJumpPiece.c).map(m => ({ fromR: mustJumpPiece.r, fromC: mustJumpPiece.c, ...m }));
+            // Only return jumps for the required piece, only if they exist
+            return jumps.filter(m => m.capture !== null);
+        }
         
+        // 2. Check all pieces for mandatory jumps
         for (let r = 0; r < BOARD_SIZE; r++) {
             for (let c = 0; c < BOARD_SIZE; c++) {
                 if (Math.abs(currentBoard[r][c]) === player) {
                     const moves = getLegalMovesFromBoard(currentBoard, r, c).map(m => ({ fromR: r, fromC: c, ...m }));
                     const jumps = moves.filter(m => m.capture !== null);
+                    
                     if (jumps.length > 0) {
                         mandatoryJumps.push(...jumps);
                     }
@@ -404,10 +427,11 @@
             }
         }
         
+        // Jumps are mandatory board-wide if any exist.
         if (mandatoryJumps.length > 0) {
-            return mandatoryJumps; // Return only jumps if they exist
+            return mandatoryJumps; 
         }
-        return allMoves.filter(m => m.capture === null); // Otherwise, return normal moves
+        return allMoves.filter(m => m.capture === null); // Only normal moves
     }
 
     // GAME FLOW & MOVEMENT
@@ -417,14 +441,21 @@
             board: boardCopy, 
             currentPlayer: currentPlayer, 
             scoreHuman: scoreHuman,
-            scoreAI: scoreAI
+            scoreAI: scoreAI,
+            mustJumpPiece: mustJumpPiece ? {r: mustJumpPiece.r, c: mustJumpPiece.c} : null // Save jump state
         });
     }
 
-    function movePiece(fromR, fromC, toR, toC, captureDetails) {
+    function movePiece(fromR, fromC, toR, toC, moveWasCapture) {
         saveState(); 
 
         const piece = board[fromR][fromC];
+        
+        // Capture details
+        let captureDetails = null;
+        if (moveWasCapture) {
+            captureDetails = { r: (fromR + toR) / 2, c: (fromC + toC) / 2 };
+        }
         
         board[toR][toC] = piece;
         board[fromR][fromC] = EMPTY;
@@ -435,20 +466,45 @@
         }
 
         // King promotion
+        const isKingPromoted = (piece === PLAYER_1 && toR === 0) || (piece === PLAYER_2 && toR === BOARD_SIZE - 1);
         if (piece === PLAYER_1 && toR === 0) {
             board[toR][toC] = HUMAN_KING;
         } else if (piece === PLAYER_2 && toR === BOARD_SIZE - 1) {
             board[toR][toC] = AI_KING;
         }
+        
+        let shouldContinueJump = false;
+        
+        if (moveWasCapture && !isKingPromoted) {
+            // Check if another jump is available from the new position
+            const possibleNextJumps = getLegalMovesFromBoard(board, toR, toC).filter(m => m.capture !== null);
+            if (possibleNextJumps.length > 0) {
+                mustJumpPiece = { r: toR, c: toC };
+                shouldContinueJump = true;
+            }
+        }
+        
+        if (!shouldContinueJump) {
+            // End turn only if no further jumps are required or if the piece was promoted.
+            mustJumpPiece = null;
+            currentPlayer = currentPlayer === PLAYER_1 ? PLAYER_2 : PLAYER_1;
+        }
 
-        currentPlayer = currentPlayer === PLAYER_1 ? PLAYER_2 : PLAYER_1;
         selectedPiece = null;
         
         drawPieces(); 
         checkGameOver();
 
         if (isGameActive && currentPlayer === PLAYER_2) {
-            callAI(); 
+            // If AI's turn, call AI for its move, which handles single or chain jumps.
+            callAI();
+        }
+        
+        // If human must jump again, re-select the piece and highlight moves
+        if (shouldContinueJump && currentPlayer === PLAYER_1) {
+             selectedPiece = mustJumpPiece;
+             const moves = getLegalMovesFromBoard(board, mustJumpPiece.r, mustJumpPiece.c);
+             highlightLegalMoves(moves);
         }
     }
 
@@ -462,18 +518,33 @@
         const r = parseInt(cellElement.dataset.row);
         const c = parseInt(cellElement.dataset.col);
         
+        const isCurrentPiece = cellElement.querySelector('.piece') && Math.abs(board[r][c]) === currentPlayer;
         const allLegalMoves = getAllLegalMovesForPlayer(board, PLAYER_1);
-        const mandatoryJumps = allLegalMoves.filter(m => m.capture !== null);
+        const mandatoryJumpsExist = allLegalMoves.some(m => m.capture !== null);
 
-        if (cellElement.querySelector('.piece') && Math.abs(board[r][c]) === currentPlayer) {
+        // 1. Must Jump Check (Prevent selecting a different piece mid-chain)
+        if (mustJumpPiece && (r !== mustJumpPiece.r || c !== mustJumpPiece.c)) {
+            STATUS_MESSAGE.textContent = "Must continue jumping with the selected piece.";
+            // If the selectedPiece is already set to the jump piece, just re-highlight
+            if (selectedPiece && selectedPiece.r === mustJumpPiece.r && selectedPiece.c === mustJumpPiece.c) {
+                const moves = getLegalMovesFromBoard(board, mustJumpPiece.r, mustJumpPiece.c);
+                highlightLegalMoves(moves);
+            }
+            return;
+        }
+
+        // 2. Piece Selection
+        if (isCurrentPiece || (mustJumpPiece && r === mustJumpPiece.r && c === mustJumpPiece.c)) {
             
             let pieceMoves = getLegalMovesFromBoard(board, r, c).map(m => ({ fromR: r, fromC: c, ...m }));
             
-            if (mandatoryJumps.length > 0) {
+            // If mandatory jumps exist, filter the moves to only show jumps
+            if (mandatoryJumpsExist) {
                  pieceMoves = pieceMoves.filter(m => m.capture !== null);
             }
             
-            if (mandatoryJumps.length > 0 && pieceMoves.length === 0) {
+            // If mandatory jumps exist but this piece can't jump, inform the user
+            if (mandatoryJumpsExist && pieceMoves.length === 0) {
                 STATUS_MESSAGE.textContent = "Jump is mandatory! Select a piece that can jump.";
                 selectedPiece = null;
                 highlightLegalMoves([]); 
@@ -483,13 +554,18 @@
             selectedPiece = { r, c };
             highlightLegalMoves(pieceMoves);
             
+        // 3. Move Execution
         } else if (selectedPiece && cellElement.classList.contains('highlight')) {
 
-            const legalMoves = getAllLegalMovesForPlayer(board, PLAYER_1).filter(m => m.fromR === selectedPiece.r && m.fromC === selectedPiece.c);
-            const move = legalMoves.find(m => m.toR === r && m.toC === c);
+            // When moving, we filter the full list of legal moves (which accounts for mandatory jumps) 
+            // by the currently selected piece.
+            const movesForSelectedPiece = allLegalMoves.filter(m => m.fromR === selectedPiece.r && m.fromC === selectedPiece.c);
+            
+            const move = movesForSelectedPiece.find(m => m.toR === r && m.toC === c);
             
             if (move) {
-                movePiece(selectedPiece.r, selectedPiece.c, r, c, move.capture);
+                const moveWasCapture = move.capture !== null;
+                movePiece(selectedPiece.r, selectedPiece.c, r, c, moveWasCapture);
             }
         }
     }
@@ -525,19 +601,39 @@
         return newBoard;
     }
 
-    function minimax(currentBoard, depth, alpha, beta, maximizingPlayer) {
+    // Minimax Helper to find next jump for AI simulation
+    function getNextJump(boardState, r, c) {
+        const jumps = getLegalMovesFromBoard(boardState, r, c).filter(m => m.capture !== null);
+        return jumps.length > 0 ? { r, c } : null;
+    }
+
+    function minimax(currentBoard, depth, alpha, beta, maximizingPlayer, currentMustJumpPiece) {
+        // Evaluate if depth is 0 OR no moves are possible
         if (depth === 0) return evaluateBoard(currentBoard);
         
         const player = maximizingPlayer ? PLAYER_2 : PLAYER_1;
-        const allLegalMoves = getAllLegalMovesForPlayer(currentBoard, player);
         
+        // IMPORTANT: Use the currentMustJumpPiece state for generating moves
+        const originalMustJumpPiece = mustJumpPiece;
+        mustJumpPiece = currentMustJumpPiece;
+        const allLegalMoves = getAllLegalMovesForPlayer(currentBoard, player);
+        mustJumpPiece = originalMustJumpPiece; // Restore global state
+
         if (allLegalMoves.length === 0) return maximizingPlayer ? -1000 : 1000;
 
         if (maximizingPlayer) {
             let maxEval = -Infinity;
             for (const move of allLegalMoves) {
                 const newBoard = applyMove(currentBoard, move);
-                const evaluation = minimax(newBoard, depth - 1, alpha, beta, false);
+                
+                let nextMustJump = null;
+                if (move.capture !== null) {
+                    // Check if the piece must jump again after this simulated move
+                    nextMustJump = getNextJump(newBoard, move.toR, move.toC);
+                }
+                
+                const evaluation = minimax(newBoard, depth - 1, alpha, beta, nextMustJump !== null, nextMustJump);
+                
                 maxEval = Math.max(maxEval, evaluation);
                 alpha = Math.max(alpha, evaluation);
                 if (beta <= alpha) break;
@@ -547,7 +643,14 @@
             let minEval = Infinity;
             for (const move of allLegalMoves) {
                 const newBoard = applyMove(currentBoard, move);
-                const evaluation = minimax(newBoard, depth - 1, alpha, beta, true);
+                
+                let nextMustJump = null;
+                if (move.capture !== null) {
+                    nextMustJump = getNextJump(newBoard, move.toR, move.toC);
+                }
+                
+                const evaluation = minimax(newBoard, depth - 1, alpha, beta, nextMustJump === null, nextMustJump);
+                
                 minEval = Math.min(minEval, evaluation);
                 beta = Math.min(beta, evaluation);
                 if (beta <= alpha) break;
@@ -561,11 +664,21 @@
         let bestScore = -Infinity;
         const SEARCH_DEPTH = parseInt(DIFFICULTY_SELECT.value);
         
+        // Use the global mustJumpPiece state if a chain jump is mandatory
         const allLegalMoves = getAllLegalMovesForPlayer(board, PLAYER_2);
 
         for (const move of allLegalMoves) {
             const newBoard = applyMove(board, move);
-            const score = minimax(newBoard, SEARCH_DEPTH - 1, -Infinity, Infinity, false);
+            
+            let nextMustJump = null;
+            if (move.capture !== null) {
+                // Check if the piece must jump again after this simulated move
+                nextMustJump = getNextJump(newBoard, move.toR, move.toC);
+            }
+
+            // AI (Maximizing Player) makes the move, so next turn is Human (Minimizing Player).
+            // Pass the next mandatory jump state to the next minimax call.
+            const score = minimax(newBoard, SEARCH_DEPTH - 1, -Infinity, Infinity, nextMustJump === null ? false : true, nextMustJump);
             
             if (score > bestScore) {
                 bestScore = score;
@@ -584,7 +697,8 @@
             const bestMove = findBestMove();
 
             if (bestMove) {
-                movePiece(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC, bestMove.capture);
+                const moveWasCapture = bestMove.capture !== null;
+                movePiece(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC, moveWasCapture);
             } else {
                 checkGameOver(); 
             }
@@ -607,17 +721,38 @@
     }
     
     function undoLastMove() {
-        if (history.length < 2 || !isGameActive) return; 
+        if (history.length === 0) return; 
 
-        // Go back two states to undo both the Human move and the AI move
-        history.pop(); 
-        const previousState = history.pop();
+        // Find the most recent state where the current player was PLAYER_1 (Human's turn start)
+        let targetIndex = -1;
+        for(let i = history.length - 1; i >= 0; i--) {
+            if(history[i].currentPlayer === PLAYER_1 && history[i].mustJumpPiece === null) {
+                // Find a state where Human's turn *starts* and no chain jump was ongoing
+                targetIndex = i;
+                break;
+            }
+            if (i === 0 && history[i].currentPlayer === PLAYER_1) {
+                // If it's the very first move, allow undo
+                targetIndex = i;
+                break;
+            }
+        }
+
+        if (targetIndex === -1) {
+             // If we couldn't find a clean turn start, just revert to the state before the current player's move
+             targetIndex = history.length - 1; 
+        }
+        
+        const previousState = history[targetIndex];
+        history = history.slice(0, targetIndex);
+
         
         board = previousState.board.map(row => [...row]);
         currentPlayer = previousState.currentPlayer;
         scoreHuman = previousState.scoreHuman;
         scoreAI = previousState.scoreAI;
         isGameActive = true; 
+        mustJumpPiece = previousState.mustJumpPiece;
         
         drawPieces();
         STATUS_MESSAGE.textContent = 'Undo successful! Your Turn (Light)';
@@ -632,6 +767,7 @@
         scoreAI = 0;
         isGameActive = true;
         history = []; 
+        mustJumpPiece = null;
         
         drawPieces(); 
         
